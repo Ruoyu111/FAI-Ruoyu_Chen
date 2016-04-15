@@ -1,11 +1,6 @@
 package pacman;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
@@ -23,8 +18,7 @@ import pacman.controllers.examples.RandomNonRevPacMan;
 import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
-import pacman.controllers.ruoyu_chen.BFS_Controller;
-import pacman.controllers.ruoyu_chen.DFS_Controller;
+import pacman.controllers.ruoyu_chen.*;
 //import pacman.controllers.BFS_Controller;
 import pacman.game.Game;
 import pacman.game.GameView;
@@ -54,21 +48,22 @@ public class Executor
 		exec.runExperiment(new RandomPacMan(),new RandomGhosts(),numTrials);*/
 		 
 		
-		/*
+
 		//run a game in synchronous mode: game waits until controllers respond.
-		int delay=5;
-		boolean visual=true;
-		exec.runGame(new RandomPacMan(),new RandomGhosts(),visual,delay);
-  		 */
-		
+//		int delay=5;
+//		boolean visual=true;
+//		exec.runGame(new RandomPacMan(),new RandomGhosts(),visual,delay);
+//		exec.runGame(new KNN_Controller(),new StarterGhosts(),visual, delay);
 		///*
 		//run the game in asynchronous mode.
 		boolean visual=true;
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
-		exec.runGameTimed(new DFS_Controller(),new StarterGhosts(),visual);
-//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);	
+//		exec.runGameTimed(new DFS_Controller(),new StarterGhosts(),visual);
+//		exec.runGameTimed(new AStar_Controller(),new StarterGhosts(),visual);
+//		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);
+//		exec.runGameTimed(new KNN_Controller(),new StarterGhosts(),visual);
+		exec.runGameTimed(new QLearning_Controller(),new StarterGhosts(),visual);
 		//*/
-		
 		/*
 		//run the game in asynchronous mode but advance as soon as both controllers are ready  - this is the mode of the competition.
 		//time limit of DELAY ms still applies.
@@ -109,8 +104,8 @@ public class Executor
 			
 			while(!game.gameOver())
 			{
-		        game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
-		        		ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
+				game.advanceGame(pacManController.getMove(game.copy(),System.currentTimeMillis()+DELAY),
+                        ghostController.getMove(game.copy(),System.currentTimeMillis()+DELAY));
 			}
 			
 			avgScore+=game.getScore();
@@ -141,9 +136,9 @@ public class Executor
 		
 		while(!game.gameOver())
 		{
-	        game.advanceGame(pacManController.getMove(game.copy(),-1),ghostController.getMove(game.copy(),-1));
-	        
-	        try{Thread.sleep(delay);}catch(Exception e){}
+			game.advanceGame(pacManController.getMove(game.copy(),-1),ghostController.getMove(game.copy(),-1));
+
+			try{Thread.sleep(delay);}catch(Exception e){}
 	        
 	        if(visual)
 	        	gv.repaint();
